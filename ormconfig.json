@@ -1,17 +1,42 @@
-{
-  "type": "postgres",
-  "host": "localhost",
-  "username": "postgres",
-  "password": "root",
-  "database": "kgphotos",
-  "synchronize": true,
-  "logging": true,
-  "entities": ["src/entity/**/*.ts"],
-  "migrations": ["src/migration/**/*.ts"],
-  "subscribers": ["src/subscriber/**/*.ts"],
-  "cli": {
-    "entitiesDir": "src/entity",
-    "migrationsDir": "src/migration",
-    "subscribersDir": "src/subscriber"
+[
+  {
+    "name": "default",
+    "type": "postgres",
+    "host": "localhost",
+    "username": "postgres",
+    "password": "root",
+    "database": "kgphotos",
+    "synchronize": true,
+    "logging": true,
+    "entities": ["src/entity/**/*.ts"],
+    "migrations": ["src/migration/**/*.ts"],
+    "subscribers": ["src/subscriber/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  },
+  {
+    "name": "production",
+    "type": "postgres",
+    "host": "ec2-50-16-198-4.compute-1.amazonaws.com",
+    "username": "mpmaifdvxwghvj",
+    "password": "bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef",
+    "port": 5432,
+    "database": "da7bc573qoo1nj",
+    "extra": {
+      "ssl": true
+    },
+    "synchronize": true,
+    "logging": true,
+    "entities": ["src/entity/**/*.ts"],
+    "migrations": ["src/migration/**/*.ts"],
+    "subscribers": ["src/subscriber/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
   }
-}
+]

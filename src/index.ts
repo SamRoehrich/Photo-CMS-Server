@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import express from "express";
-import { createConnection } from "typeorm";
+import { createConnection, getConnectionOptions } from "typeorm";
 import cors from "cors";
 import { Photo } from "./entity/Photo";
 
@@ -9,7 +9,16 @@ import { Photo } from "./entity/Photo";
 
   app.use(cors());
 
-  await createConnection();
+  const connectionOptions = await getConnectionOptions(process.env.NODE_ENV);
+
+  process.env.NODE_ENV == "production"
+    ? await createConnection({
+        ...connectionOptions,
+        url:
+          "postgres://mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef@ec2-50-16-198-4.compute-1.amazonaws.com:5432/da7bc573qoo1nj",
+        name: "default",
+      } as any)
+    : await createConnection();
 
   //   Photo.create({
   //     title: "JorscheJ",
@@ -18,6 +27,10 @@ import { Photo } from "./entity/Photo";
   //     link:
   //       "https://res.cloudinary.com/dchopcxko/image/upload/v1595821556/IMG_3799-min_bm92vy.jpg",
   //   }).save();
+
+  app.get("/", (_req, res) => {
+    res.send("KG Photo server");
+  });
 
   app.get("/photos/", async (_req, res) => {
     res.json(await Photo.find({ where: { tag: "home" } }));
