@@ -18,6 +18,11 @@ import { Photo } from "./entity/Photo";
         url:
           "postgres://mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef@ec2-50-16-198-4.compute-1.amazonaws.com:5432/da7bc573qoo1nj",
         name: "default",
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
       } as any)
     : await createConnection();
 
