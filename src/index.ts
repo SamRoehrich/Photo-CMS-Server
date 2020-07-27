@@ -6,6 +6,7 @@ import { Photo } from "./entity/Photo";
 
 (async () => {
   const app = express();
+  const port = process.env.PORT || 5000;
 
   app.use(cors());
 
@@ -19,6 +20,8 @@ import { Photo } from "./entity/Photo";
         name: "default",
       } as any)
     : await createConnection();
+
+  console.log(process.env.NODE_ENV);
 
   //   Photo.create({
   //     title: "JorscheJ",
@@ -52,7 +55,7 @@ import { Photo } from "./entity/Photo";
     res.send("admin upload");
   });
 
-  app.listen(5000, () => {
+  app.listen(port, () => {
     console.log("App running on port 5000");
   });
 })();
