@@ -9,6 +9,7 @@ import { Photo } from "./entity/Photo";
   const port = process.env.PORT || 5000;
 
   app.use(cors());
+  app.use(express.json());
 
   const connectionOptions = await getConnectionOptions(process.env.NODE_ENV);
 
@@ -56,8 +57,25 @@ import { Photo } from "./entity/Photo";
     res.json(await Photo.find({ where: { tag: "not climbing" } }));
   });
 
-  app.get("/admin/upload", (_req, res) => {
-    res.send("admin upload");
+  app.post("/admin/upload", (req, res) => {
+    const title = req.body.title;
+    const description = req.body.description;
+    const tag = req.body.tag;
+    const link = req.body.link;
+
+    Photo.create({
+      title,
+      tag,
+      link,
+      isActive: true,
+    }).save();
+
+    res.send({
+      title,
+      description,
+    });
+
+    // res.send({ title, description });
   });
 
   app.listen(port, () => {
