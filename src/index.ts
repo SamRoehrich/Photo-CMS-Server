@@ -2,7 +2,9 @@ import "reflect-metadata";
 import express from "express";
 import { createConnection, getConnectionOptions } from "typeorm";
 import cors from "cors";
+
 import { Photo } from "./entity/Photo";
+import { toThumbnail } from "../utils/toThumbnail";
 
 (async () => {
   const app = express();
@@ -26,16 +28,6 @@ import { Photo } from "./entity/Photo";
         },
       } as any)
     : await createConnection();
-
-  console.log(process.env.NODE_ENV);
-
-  //   Photo.create({
-  //     title: "JorscheJ",
-  //     isActive: true,
-  //     tag: "portrait",
-  //     link:
-  //       "https://res.cloudinary.com/dchopcxko/image/upload/v1595821556/IMG_3799-min_bm92vy.jpg",
-  //   }).save();
 
   app.get("/", (_req, res) => {
     res.send("KG Photo server");
@@ -63,10 +55,13 @@ import { Photo } from "./entity/Photo";
     const tag = req.body.tag;
     const link = req.body.link;
 
+    const thumbnail = toThumbnail(link);
+
     Photo.create({
       title,
       tag,
       link,
+      thumbnail,
       isActive: true,
     }).save();
 
@@ -74,8 +69,6 @@ import { Photo } from "./entity/Photo";
       title,
       description,
     });
-
-    // res.send({ title, description });
   });
 
   app.listen(port, () => {
