@@ -49,6 +49,10 @@ import { toThumbnail } from "../utils/toThumbnail";
     res.json(await Photo.find({ where: { tag: "not climbing" } }));
   });
 
+  app.get("/photos/all", async (_req, res) => {
+    res.json(await Photo.find());
+  });
+
   app.post("/admin/upload", (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
