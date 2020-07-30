@@ -5,6 +5,7 @@ import cors from "cors";
 
 import { Photo } from "./entity/Photo";
 import { toThumbnail } from "../utils/toThumbnail";
+import { addBorderWidth } from "../utils/addBorderWidth";
 
 (async () => {
   const app = express();
@@ -75,34 +76,47 @@ import { toThumbnail } from "../utils/toThumbnail";
     });
   });
 
-  app.post("/admin/update", async (req, res) => {
-    // const thumbnail = toThumbnail(req.body.link);
-    console.log(req.body);
+  app.put("/admin/update", async (req, res) => {
+    const link = addBorderWidth(req.body.link, req.body.borderWidth);
     await getConnection()
       .createQueryBuilder()
       .update(Photo)
       .set({
-        link: req.body.link,
+        link,
         isActive: req.body.isActive,
-        thumbnail: req.body.thumbnail,
         title: req.body.title,
         tag: req.body.tag,
-        tagIndex: req.body.tagIndex,
+        tagIndex: req.body.order,
       })
       .where("id = :id", { id: req.body.id })
       .execute();
-    res.json(await Photo.find({ where: { id: req.body.id } }));
+    res.json(await Photo.findOne(req.body.id));
   });
 
-  app.post("/admin/toggleActive", async (req, res) => {
+  app.put("/admin/toggleActive", async (req, res) => {
+    const isActive = req.body.isActive;
+    // console.log(isActive);
+    // const photo = await Photo.findOne(req.body.id);
+    // await photo?.save((photo.isActive = req.body.isActive));
     await getConnection()
       .createQueryBuilder()
       .update(Photo)
-      .set({ isActive: req.body.isActive })
+      .set({ isActive: isActive })
       .where("id = :id", { id: req.body.id })
       .execute();
 
-    res.sendStatus(200);
+    res.json(await Photo.findOne(req.body.id));
+  });
+
+  app.delete("/admin/deletePhoto", async (req, res) => {
+    const pic = await Photo.findOne(req.body.id);
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(Photo)
+      .where("id = :id", { id: req.body.id })
+      .execute();
+    res.send(pic);
   });
 
   app.listen(port, () => {
