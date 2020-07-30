@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import express from "express";
-import { createConnection, getConnectionOptions } from "typeorm";
+import { createConnection, getConnectionOptions, getConnection } from "typeorm";
 import cors from "cors";
 
 import { Photo } from "./entity/Photo";
@@ -73,6 +73,36 @@ import { toThumbnail } from "../utils/toThumbnail";
       title,
       description,
     });
+  });
+
+  app.post("/admin/update", async (req, res) => {
+    // const thumbnail = toThumbnail(req.body.link);
+    console.log(req.body);
+    await getConnection()
+      .createQueryBuilder()
+      .update(Photo)
+      .set({
+        link: req.body.link,
+        isActive: req.body.isActive,
+        thumbnail: req.body.thumbnail,
+        title: req.body.title,
+        tag: req.body.tag,
+        tagIndex: req.body.tagIndex,
+      })
+      .where("id = :id", { id: req.body.id })
+      .execute();
+    res.json(await Photo.find({ where: { id: req.body.id } }));
+  });
+
+  app.post("/admin/toggleActive", async (req, res) => {
+    await getConnection()
+      .createQueryBuilder()
+      .update(Photo)
+      .set({ isActive: req.body.isActive })
+      .where("id = :id", { id: req.body.id })
+      .execute();
+
+    res.sendStatus(200);
   });
 
   app.listen(port, () => {
