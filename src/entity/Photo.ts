@@ -20,6 +20,8 @@ export class Photo extends BaseEntity {
   @Column({ nullable: true })
   thumbnail: string;
 
+  @Column({ nullable: true })
+  tagIndex: number;
   //remove nullable in production
   @Column({ nullable: true })
   link: string;
