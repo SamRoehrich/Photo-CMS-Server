@@ -1,18 +1,39 @@
 import "reflect-metadata";
 import express from "express";
+import session from "express-session";
 import { createConnection, getConnectionOptions, getConnection } from "typeorm";
 import cors from "cors";
 
 import { Photo } from "./entity/Photo";
 import { toThumbnail } from "../utils/toThumbnail";
 import { addBorderWidth } from "../utils/addBorderWidth";
+import { User } from "./entity/User";
 
 (async () => {
+  await User.create({
+    name: "admin",
+    password:
+      "mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef",
+    userName: "admin",
+  }).save();
+
   const app = express();
   const port = process.env.PORT || 5000;
 
   app.use(cors());
   app.use(express.json());
+  app.use(
+    session({
+      secret: "mysessionsecret",
+      name: "sid",
+      saveUninitialized: false,
+      resave: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 2,
+        secure: false,
+      },
+    })
+  );
 
   const connectionOptions = await getConnectionOptions(process.env.NODE_ENV);
 
@@ -52,6 +73,21 @@ import { addBorderWidth } from "../utils/addBorderWidth";
 
   app.get("/photos/all", async (_req, res) => {
     res.json(await Photo.find());
+  });
+
+  app.post("/admin/login", async (req, res) => {
+    const user = await User.find({
+      where: {
+        userName: req.body.userName,
+      },
+    });
+
+    if (user[0].password === req.body.password) {
+      res.sendStatus(200);
+      req.session!.userId = user[0].id;
+    } else {
+      res.sendStatus(403);
+    }
   });
 
   app.post("/admin/upload", (req, res) => {
