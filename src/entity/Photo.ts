@@ -15,7 +15,7 @@ export class Photo extends BaseEntity {
   isActive: boolean;
 
   @Column({ nullable: true })
-  width: number;
+  borderWidth: number;
 
   @Column({ nullable: true })
   thumbnail: string;
@@ -25,4 +25,7 @@ export class Photo extends BaseEntity {
   //remove nullable in production
   @Column({ nullable: true })
   link: string;
+
+  @Column({ nullable: true })
+  cloudLocation: string;
 }

@@ -58,15 +58,19 @@ import { addBorderWidth } from "../utils/addBorderWidth";
     const title = req.body.title;
     const description = req.body.description;
     const tag = req.body.tag;
-    const link = req.body.link;
+    const link = req.body.cloudLink;
+    const cloudLocation = req.body.cloudLocation;
+    const borderWidth = req.body.borderWidth;
 
-    const thumbnail = toThumbnail(link);
+    const thumbnail = toThumbnail(req.body.thumbnailLink);
 
     Photo.create({
       title,
       tag,
       link,
       thumbnail,
+      borderWidth,
+      cloudLocation,
       isActive: true,
     }).save();
 
