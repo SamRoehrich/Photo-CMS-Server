@@ -10,12 +10,12 @@ import { addBorderWidth } from "../utils/addBorderWidth";
 import { User } from "./entity/User";
 
 (async () => {
-  await User.create({
-    name: "admin",
-    password:
-      "mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef",
-    userName: "admin",
-  }).save();
+  // await User.create({
+  //   name: "admin",
+  //   password:
+  //     "mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef",
+  //   userName: "admin",
+  // }).save();
 
   const app = express();
   const port = process.env.PORT || 5000;
