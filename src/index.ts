@@ -8,15 +8,9 @@ import { Photo } from "./entity/Photo";
 import { toThumbnail } from "../utils/toThumbnail";
 import { addBorderWidth } from "../utils/addBorderWidth";
 import { User } from "./entity/User";
+import { Theme } from "./entity/Theme";
 
 (async () => {
-  // await User.create({
-  //   name: "admin",
-  //   password:
-  //     "mpmaifdvxwghvj:bd6be047c85685388d47fc92e7c2df557e7c71e8b493c218ffd8e7530b301bef",
-  //   userName: "admin",
-  // }).save();
-
   const app = express();
   const port = process.env.PORT || 5000;
 
@@ -50,6 +44,17 @@ import { User } from "./entity/User";
         },
       } as any)
     : await createConnection();
+
+  await Theme.create({
+    title: "Primary Theme",
+    primaryColor: "#EFE9DC",
+    secondaryColor: "#EFE9DC",
+    tertiaryColor: "#EFE9DC",
+    ascentColor: "#E6714A",
+    backgroundColor: "#EFE9DC",
+    textPrimaryColor: "rgba(0, 0, 0, 0.87)",
+    textSecondaryColor: "#ff80ab",
+  }).save();
 
   app.get("/", (_req, res) => {
     res.send("KG Photo server");
@@ -157,6 +162,28 @@ import { User } from "./entity/User";
       .where("id = :id", { id: req.body.id })
       .execute();
     res.send(pic);
+  });
+
+  app.get("/theme", async (_req, res) => {
+    res.json(await Theme.find());
+  });
+
+  app.put("/admin/edit-theme", async (req, res) => {
+    await getConnection()
+      .createQueryBuilder()
+      .update(Theme)
+      .set({
+        primaryColor: req.body.theme.primaryColor,
+        secondaryColor: req.body.theme.secondaryColor,
+        tertiaryColor: req.body.theme.tertiaryColor,
+        ascentColor: req.body.theme.primaryColor,
+        backgroundColor: req.body.theme.backgroundColor,
+        textPrimaryColor: req.body.theme.textPrimaryColor,
+        textSecondaryColor: req.body.theme.textSecondaryColor,
+      })
+      .where("id = :id", { id: req.body.theme.id })
+      .execute();
+    res.json(await Theme.findOne(req.body.theme.id));
   });
 
   app.listen(port, () => {
