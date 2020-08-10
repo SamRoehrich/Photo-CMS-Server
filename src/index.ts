@@ -116,6 +116,7 @@ import { Theme } from "./entity/Theme";
         title: req.body.title,
         tag: req.body.tag,
         tagIndex: req.body.order,
+        borderWidth: req.body.borderWidth,
       })
       .where("id = :id", { id: req.body.id })
       .execute();
