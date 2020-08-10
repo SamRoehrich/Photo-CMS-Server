@@ -43,6 +43,18 @@ import { Theme } from "./entity/Theme";
       } as any)
     : await createConnection();
 
+  await Theme.create({
+    title: "Primary Theme",
+    primaryColor: "#EFE9DC",
+    secondaryColor: "#EFE9DC",
+    tertiaryColor: "#EFE9DC",
+    ascentColor: "#E6714A",
+    backgroundColor: "#EFE9DC",
+    textPrimaryColor: "rgba(0, 0, 0, 0.87)",
+    textSecondaryColor: "#ff80ab",
+    borderColor: "#DE663A",
+  }).save();
+
   app.get("/", (_req, res) => {
     res.send("KG Photo server");
   });

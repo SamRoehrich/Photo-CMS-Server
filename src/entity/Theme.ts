@@ -17,7 +17,7 @@ export class Theme extends BaseEntity {
   @Column()
   tertiaryColor: string;
 
-  @Column({ nullable: true })
+  @Column()
   borderColor: string;
 
   @Column()
