@@ -1,4 +1,11 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from "typeorm";
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  BeforeInsert,
+  getRepository,
+} from "typeorm";
 
 @Entity()
 export class Photo extends BaseEntity {
@@ -28,4 +35,11 @@ export class Photo extends BaseEntity {
 
   @Column({ nullable: true })
   cloudLocation: string;
+
+  @BeforeInsert()
+  async addTagIndex() {
+    const photoReop = getRepository(Photo);
+    const photosByTag = await photoReop.find({ where: { tag: this.tag } });
+    this.tagIndex = photosByTag.length;
+  }
 }

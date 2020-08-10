@@ -6,8 +6,6 @@ import cors from "cors";
 
 import { Photo } from "./entity/Photo";
 import { toThumbnail } from "../utils/toThumbnail";
-import { addBorderWidth } from "../utils/addBorderWidth";
-import { User } from "./entity/User";
 import { Theme } from "./entity/Theme";
 
 (async () => {
@@ -45,17 +43,6 @@ import { Theme } from "./entity/Theme";
       } as any)
     : await createConnection();
 
-  await Theme.create({
-    title: "Primary Theme",
-    primaryColor: "#EFE9DC",
-    secondaryColor: "#EFE9DC",
-    tertiaryColor: "#EFE9DC",
-    ascentColor: "#E6714A",
-    backgroundColor: "#EFE9DC",
-    textPrimaryColor: "rgba(0, 0, 0, 0.87)",
-    textSecondaryColor: "#ff80ab",
-  }).save();
-
   app.get("/", (_req, res) => {
     res.send("KG Photo server");
   });
@@ -78,21 +65,6 @@ import { Theme } from "./entity/Theme";
 
   app.get("/photos/all", async (_req, res) => {
     res.json(await Photo.find());
-  });
-
-  app.post("/admin/login", async (req, res) => {
-    const user = await User.find({
-      where: {
-        userName: req.body.userName,
-      },
-    });
-
-    if (user[0].password === req.body.password) {
-      res.sendStatus(200);
-      req.session!.userId = user[0].id;
-    } else {
-      res.sendStatus(403);
-    }
   });
 
   app.post("/admin/upload", (req, res) => {
@@ -122,12 +94,12 @@ import { Theme } from "./entity/Theme";
   });
 
   app.put("/admin/update", async (req, res) => {
-    const link = addBorderWidth(req.body.link, req.body.borderWidth);
+    // const link = addBorderWidth(req.body.link, req.body.borderWidth);
     await getConnection()
       .createQueryBuilder()
       .update(Photo)
       .set({
-        link,
+        link: req.body.link,
         isActive: req.body.isActive,
         title: req.body.title,
         tag: req.body.tag,
@@ -140,9 +112,6 @@ import { Theme } from "./entity/Theme";
 
   app.put("/admin/toggleActive", async (req, res) => {
     const isActive = req.body.isActive;
-    // console.log(isActive);
-    // const photo = await Photo.findOne(req.body.id);
-    // await photo?.save((photo.isActive = req.body.isActive));
     await getConnection()
       .createQueryBuilder()
       .update(Photo)
@@ -180,6 +149,7 @@ import { Theme } from "./entity/Theme";
         backgroundColor: req.body.theme.backgroundColor,
         textPrimaryColor: req.body.theme.textPrimaryColor,
         textSecondaryColor: req.body.theme.textSecondaryColor,
+        borderColor: req.body.theme.borderColor,
       })
       .where("id = :id", { id: req.body.theme.id })
       .execute();
